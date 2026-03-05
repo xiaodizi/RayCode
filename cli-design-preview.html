@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RayCode CLI 设计方案预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #94a3b8;
+        }
+
+        .design-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .design-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .design-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .design-title {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .design-emoji {
+            font-size: 1.5em;
+        }
+
+        .design-desc {
+            color: #94a3b8;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .preview-box {
+            background: #0a0a0f;
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 11px;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre;
+            color: #e5e7eb;
+            border: 1px solid #1f2937;
+            margin-bottom: 15px;
+        }
+
+        /* Glassmorphism 预览样式 */
+        .glass-preview {
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.9), rgba(49, 46, 129, 0.9));
+        }
+
+        /* Brutalism 预览样式 */
+        .brutal-preview {
+            background: #000;
+            border: 2px solid #fff;
+        }
+
+        /* Gradient 预览样式 */
+        .gradient-preview {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+        }
+
+        /* Matrix 预览样式 */
+        .matrix-preview {
+            background: #0a0f0a;
+            border: 1px solid #00ff00;
+        }
+
+        /* Zen 预览样式 */
+        .zen-preview {
+            background: #1a1a1a;
+            border: none;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .features {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            color: #94a3b8;
+        }
+
+        .recommended {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(59, 130, 246, 0.2));
+            border: 2px solid rgba(34, 197, 94, 0.5);
+        }
+
+        .recommended-badge {
+            display: inline-block;
+            background: #22c55e;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .comparison {
+            margin-top: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .comparison h2 {
+            margin-bottom: 20px;
+            color: #06b6d4;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-table th {
+            color: #94a3b8;
+            font-weight: normal;
+        }
+
+        .stars {
+            color: #fbbf24;
+        }
+
+        @media (max-width: 768px) {
+            .design-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 RayCode CLI 设计方案</h1>
+        <p class="subtitle">为你的开发体验选择最佳视觉风格</p>
+
+        <div class="design-grid">
+            <!-- 方案一: Modern Glassmorphism -->
+            <div class="design-card glass-preview">
+                <div class="design-title">
+                    <span class="design-emoji">🎨</span>
+                    <span>Modern Glassmorphism</span>
+                </div>
+                <p class="design-desc">现代玻璃态设计,半透明效果,营造轻盈通透的视觉感受,适合展示和演示。</p>
+
+                <div class="preview-box">┌───────────────────────────────────┐
+│  ╔═════════════════════════╗  │
+│  ║  💬 You                  ║  │
+│  ╚═════════════════════════╝  │
+│  帮我生成一个 React 组件        │
+└───────────────────────────────────┘
+
+┌───────────────────────────────────┐
+│  ╔═════════════════════════╗  │
+│  ║  ✨ RayCode              ║  │
+│  ╚═════════════════════════╝  │
+│  好的,我来帮你创建...            │
+│                                 │
+│  ┌─ React Component ───┐      │
+│  │ import React...     │      │
+│  └─────────────────────┘      │
+└───────────────────────────────────┘
+
+💬 ━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+                <div class="color-palette">
+                    <div class="color-swatch" style="background: #6366f1"></div>
+                    <div class="color-swatch" style="background: #8b5cf6"></div>
+                    <div class="color-swatch" style="background: #06b6d4"></div>
+                    <div class="color-swatch" style="background: #3b82f6"></div>
+                    <div class="color-swatch" style="background: #f472b6"></div>
+                </div>
+
+                <div class="features">
+                    <span class="feature-tag">半透明效果</span>
+                    <span class="feature-tag">圆角设计</span>
+                    <span class="feature-tag">渐变色彩</span>
+                    <span class="feature-tag">现代感</span>
+                </div>
+            </div>
+
+            <!-- 方案二: Neo-Brutalism -->
+            <div class="design-card brutal-preview">
+                <div class="design-title">
+                    <span class="design-emoji">🔥</span>
+                    <span>Neo-Brutalism</span>
+                </div>
+                <p class="design-desc">新野兽派风格,大胆对比色,粗线条,强烈视觉冲击力,独特的个性表达。</p>
+
+                <div class="preview-box">██████████████████████████████
+█                                █
+█   ████████████████████████   █
+█   █  🗨️ YOU                 █   █
+█   ████████████████████████   █
+█   █  帮我生成一个组件          █   █
+█   █                          █   █
+█   ████████████████████████   █
+█                                █
+█   ████████████████████████   █
+█   █  ⚡ RAYCODE              █   █
+█   ████████████████████████   █
+█   █  好的,我来帮你...           █   █
+█   ████████████████████████   █
+██████████████████████████████
+
+▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶</div>
+
+                <div class="color-palette">
+                    <div class="color-swatch" style="background: #fbbf24"></div>
+                    <div class="color-swatch" style="background: #22c55e"></div>
+                    <div class="color-swatch" style="background: #ef4444"></div>
+                    <div class="color-swatch" style="background: #06b6d4"></div>
+                    <div class="color-swatch" style="background: #ffffff"></div>
+                </div>
+
+                <div class="features">
+                    <span class="feature-tag">粗犷边框</span>
+                    <span class="feature-tag">高对比度</span>
+                    <span class="feature-tag">无圆角</span>
+                    <span class="feature-tag">独特个性</span>
+                </div>
+            </div>
+
+            <!-- 方案三: Elegant Gradient (推荐) -->
+            <div class="design-card recommended gradient-preview">
+                <span class="recommended-badge">⭐ 推荐</span>
+                <div class="design-title">
+                    <span class="design-emoji">✨</span>
+                    <span>Elegant Gradient</span>
+                </div>
+                <p class="design-desc">优雅渐变设计,柔和双线边框,清晰视觉层次,最适合长时间编码使用。</p>
+
+                <div class="preview-box">╔═══════════════════════════════╗
+║                                ║
+║  ┌─────────────────────────┐   ║
+║  │  💬 You                  │   ║
+║  └─────────────────────────┘   ║
+║  帮我生成一个 React 组件        ║
+║                                ║
+╚═══════════════════════════════╝
+
+╔═══════════════════════════════╗
+║                                ║
+║  ┌─────────────────────────┐   ║
+║  │  ✨ RayCode              │   ║
+║  └─────────────────────────┘   ║
+║  好的,我来帮你创建...            ║
+║                                ║
+║  ┌─ React Component ────┐     ║
+║  │ import React...     │     ║
+║  └──────────────────────┘     ║
+║                                ║
+╚═══════════════════════════════╝
+
+▶ ━━━━━━━━━━━━━━━━━━━━━━</div>
+
+                <div class="color-palette">
+                    <div class="color-swatch" style="background: #f97316"></div>
+                    <div class="color-swatch" style="background: #ea580c"></div>
+                    <div class="color-swatch" style="background: #06b6d4"></div>
+                    <div class="color-swatch" style="background: #0891b2"></div>
+                    <div class="color-swatch" style="background: #4b5563"></div>
+                </div>
+
+                <div class="features">
+                    <span class="feature-tag">柔和边框</span>
+                    <span class="feature-tag">优雅配色</span>
+                    <span class="feature-tag">清晰层次</span>
+                    <span class="feature-tag">护眼设计</span>
+                </div>
+            </div>
+
+            <!-- 方案四: Dark Matrix -->
+            <div class="design-card matrix-preview">
+                <div class="design-title">
+                    <span class="design-emoji">💚</span>
+                    <span>Dark Matrix</span>
+                </div>
+                <p class="design-desc">黑客帝国风格,绿色主题,字符边框,强烈科技感,程序员专属风格。</p>
+
+                <div class="preview-box" style="color: #00ff00;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓                        ▓
+▓  ┌─────────────────────┐   ▓
+▓  │ ╔════════════════╗   │   ▓
+▓  │ ║ [ USER ]        ║   │   ▓
+▓  │ ╚════════════════╝   │   ▓
+▓  │ 帮我生成一个组件      │   ▓
+▓  └─────────────────────┘   ▓
+▓                        ▓
+▓  ┌─────────────────────┐   ▓
+▓  │ ╔════════════════╗   │   ▓
+▓  │ ║ [ RAYCODE ]     ║   │   ▓
+▓  │ ╚════════════════╝   │   ▓
+▓  │ 好的,我来帮你...       │   ▓
+▓  └─────────────────────┘   ▓
+▓                        ▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+> ━━━━━━━━━━━━━━━━━</div>
+
+                <div class="color-palette">
+                    <div class="color-swatch" style="background: #00ff00"></div>
+                    <div class="color-swatch" style="background: #0f3d0f"></div>
+                    <div class="color-swatch" style="background: #1a5c1a"></div>
+                    <div class="color-swatch" style="background: #051005"></div>
+                    <div class="color-swatch" style="background: #ffff00"></div>
+                </div>
+
+                <div class="features">
+                    <span class="feature-tag">矩阵风格</span>
+                    <span class="feature-tag">绿色主题</span>
+                    <span class="feature-tag">科技感</span>
+                    <span class="feature-tag">字符边框</span>
+                </div>
+            </div>
+
+            <!-- 方案五: Minimal Zen -->
+            <div class="design-card zen-preview">
+                <div class="design-title">
+                    <span class="design-emoji">🧘</span>
+                    <span>Minimal Zen</span>
+                </div>
+                <p class="design-desc">极简禅意设计,去除所有装饰,大量留白,专注内容本身,极致的简洁。</p>
+
+                <div class="preview-box">──────────────────────────────────
+
+  RayCode  v0.80.0  │  gpt-4o  │  ● online
+
+──────────────────────────────────
+
+
+> 帮我生成一个 React 组件
+
+
+✦ 好的,我来帮你创建...
+
+  import React from 'react';
+
+  export const MyComponent = () => {
+    return <div>Hello World</div>;
+  };
+
+
+
+
+> ──────────────────────────
+
+
+  help  •  exit  •  clear  •  theme
+
+──────────────────────────────────</div>
+
+                <div class="color-palette">
+                    <div class="color-swatch" style="background: #1a1a1a"></div>
+                    <div class="color-swatch" style="background: #333333"></div>
+                    <div class="color-swatch" style="background: #d4d4d4"></div>
+                    <div class="color-swatch" style="background: #a0a0a0"></div>
+                    <div class="color-swatch" style="background: #e8a849"></div>
+                </div>
+
+                <div class="features">
+                    <span class="feature-tag">无边框</span>
+                    <span class="feature-tag">大量留白</span>
+                    <span class="feature-tag">灰度配色</span>
+                    <span class="feature-tag">极简主义</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 对比表格 -->
+        <div class="comparison">
+            <h2>📊 方案对比</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>方案</th>
+                        <th>视觉冲击力</th>
+                        <th>可读性</th>
+                        <th>开发难度</th>
+                        <th>长时间使用</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🎨 Modern Glassmorphism</td>
+                        <td class="stars">⭐⭐⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td>🔥 Neo-Brutalism</td>
+                        <td class="stars">⭐⭐⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐</td>
+                        <td class="stars">⭐⭐</td>
+                        <td class="stars">⭐⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td>✨ Elegant Gradient</td>
+                        <td class="stars">⭐⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td>💚 Dark Matrix</td>
+                        <td class="stars">⭐⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td>🧘 Minimal Zen</td>
+                        <td class="stars">⭐⭐⭐</td>
+                        <td class="stars">⭐⭐⭐⭐⭐</td>
+                        <td class="stars">⭐</td>
+                        <td class="stars">⭐⭐⭐⭐⭐</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 添加一些动画效果
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.design-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // 颜色提示
+            const swatches = document.querySelectorAll('.color-swatch');
+            swatches.forEach(swatch => {
+                swatch.addEventListener('mouseenter', () => {
+                    swatch.style.transform = 'scale(1.2)';
+                    swatch.style.transition = 'transform 0.2s';
+                });
+                swatch.addEventListener('mouseleave', () => {
+                    swatch.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
