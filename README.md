@@ -1,27 +1,5 @@
 # RayCode - Open Agentic Coding Platform
 
-<p align="center">
-  <img src="./assets/logo.png" alt="RayCode Logo" width="400"/>
-</p>
-
-<p align="center">
-  <a href="https://github.com/HKUDS/RayCode/stargazers">
-    <img src="https://img.shields.io/github/stars/HKUDS/RayCode?style=flat" alt="Stars"/>
-  </a>
-  <a href="https://arxiv.org/abs/2512.07921">
-    <img src="https://img.shields.io/badge/arXiv-2512.07921-red" alt="arXiv"/>
-  </a>
-  <a href="https://www.python.org/">
-    <img src="https://img.shields.io/badge/python-3.11+-blue" alt="Python"/>
-  </a>
-  <a href="https://bun.sh/">
-    <img src="https://img.shields.io/badge/bun-1.0+-orange" alt="Bun"/>
-  </a>
-  <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/license-MIT-green" alt="License"/>
-  </a>
-</p>
-
 ## Features
 
 ### 🚀 Paper2Code
@@ -47,7 +25,7 @@ Automated backend development. Generates efficient, scalable backend code from s
 
 ```bash
 # Clone the repository
-git clone https://github.com/HKUDS/RayCode.git
+git clone https://github.com/xiaodiz/RayCode.git
 cd RayCode
 
 # Install dependencies
