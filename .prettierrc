@@ -1,0 +1,31 @@
+#!/usr/bin/env bun
+
+export default {
+  files: [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts"
+  ],
+  ignores: [
+    "node_modules/**",
+    "dist/**",
+    "scripts/**",
+    "tests/**",
+    ".git/**"
+  ],
+  rules: {
+    "semi": "always",
+    "indent": [2, "spaces"],
+    "quotes": ["double"],
+    "trailingComma": "all",
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "commaSpacing": true,
+    "keySpacing": true,
+    "spaceBeforeFunctionParen": ["always", { "anonymous": "always", "named": "never" }],
+    "spaceInParens": ["never"],
+    "spaceAfterTypeColon": ["always"],
+    "spaceBeforeTypeColon": ["never"],
+    "objectLiteralSortKeys": "off"
+  }
+}

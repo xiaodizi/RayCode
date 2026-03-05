@@ -69,7 +69,7 @@ playground/
 # AI Coding
 AGENTS.md
 .env
-.sysyphus/
+.sisyphus/
 .omc/
 .idea/
 .claude/
